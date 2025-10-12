@@ -2,10 +2,6 @@
 
 # CodeSkyTZ unrelational API
 
-[![Node.js](https://img.shields.io/badge/Node.js-v20-green?style=flat-square&logo=node.js)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-4.x-blue?style=flat-square&logo=express)](https://expressjs.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-purple?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
-[![Gemini AI](https://img.shields.io/badge/Gemini-2.0_Flash-orange?style=flat-square&logo=google)](https://ai.google.dev/)
 
 A lightweight RESTful API providing AI-generated daily life quotes (powered by Gemini 2.0 Flash) and a simple Todo manager backed by PostgreSQL.
 
