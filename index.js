@@ -6,6 +6,19 @@ const { Pool } = pkg;
 
 dotenv.config();
 
+// 🔄 Self-ping function to keep server alive
+const pingDomain = async () => {
+  try {
+    const response = await fetch("https://non-relational-api.onrender.com");
+    console.log(`✅ Pinged domain - Status: ${response.status}`);
+  } catch (error) {
+    console.error(`❌ Ping failed: ${error.message}`);
+  }
+};
+
+// Start pinging every 10 seconds
+setInterval(pingDomain, 10000);
+
 const app = express();
 app.use(express.json());
 
