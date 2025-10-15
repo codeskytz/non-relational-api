@@ -286,3 +286,167 @@ MIT License. Copyright © 2025 CodeSkyTZ. All rights reserved.
 For questions, contact: shadows@codeskytz.site
 
 ---
+
+## 🪝 Fastlipa Webhook Integration
+
+### Webhook Setup in Fastlipa Dashboard
+
+1. **Login to Fastlipa Dashboard**
+   - Go to your Fastlipa account dashboard
+   - Navigate to "Webhooks" or "API Settings"
+
+2. **Configure Webhook URL**
+   ```
+   Production: https://api.codeskytz.site/api/payments/webhook
+   Development: http://localhost:3000/api/payments/webhook
+   ```
+
+3. **Webhook Events to Subscribe**
+   - ✅ Payment Status Updates
+   - ✅ Transaction Completed
+   - ✅ Transaction Failed
+   - ✅ Transaction Cancelled
+
+### Webhook Payload Examples
+
+#### Successful Payment
+```json
+{
+  "tranid": "pay_abc123def456",
+  "status": "success",
+  "amount": 1000,
+  "number": "712345678",
+  "timestamp": "2025-10-15T10:30:00Z"
+}
+```
+
+#### Failed Payment
+```json
+{
+  "tranid": "pay_xyz789ghi012",
+  "status": "failed",
+  "amount": 1000,
+  "number": "712345678",
+  "reason": "Insufficient balance",
+  "timestamp": "2025-10-15T10:35:00Z"
+}
+```
+
+### Testing Webhook Integration
+
+#### 1. Generate Payment Link
+```bash
+curl -X POST http://localhost:3000/api/payments/generate-link \
+  -H "codeskytz-api-key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 1000, "description": "Test payment"}'
+```
+
+#### 2. Process Payment
+```bash
+curl -X POST http://localhost:3000/api/payments/process \
+  -H "Content-Type: application/json" \
+  -d '{
+    "paymentLinkId": "generated-link-id",
+    "phoneNumber": "0712345678",
+    "customerName": "Test User"
+  }'
+```
+
+#### 3. Test Webhook (Manual)
+```bash
+curl -X POST http://localhost:3000/api/payments/webhook \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tranid": "pay_test123",
+    "status": "success",
+    "amount": 1000,
+    "number": "712345678"
+  }'
+```
+
+#### 4. Check Webhook Logs
+```bash
+curl http://localhost:3000/api/payments/webhook-logs \
+  -H "codeskytz-api-key: your-api-key"
+```
+
+### Webhook Response Handling
+
+The webhook endpoint will:
+- ✅ **Log all incoming data** for debugging
+- ✅ **Find matching payments** by transaction ID or phone number
+- ✅ **Update payment status** in database
+- ✅ **Store webhook data** for audit trail
+- ✅ **Return appropriate HTTP status** codes
+
+### Status Mapping
+
+| Fastlipa Status | Our Internal Status | Description |
+|-----------------|-------------------|-------------|
+| `success` | `completed` | Payment successful |
+| `failed` | `failed` | Payment failed |
+| `cancelled` | `cancelled` | Payment cancelled |
+| `pending` | `processing` | Payment in progress |
+
+### Debugging Webhook Issues
+
+#### Check Recent Webhook Logs
+```bash
+curl "http://localhost:3000/api/payments/webhook-logs?limit=10&status=error" \
+  -H "codeskytz-api-key: your-api-key"
+```
+
+#### Check Logs for Specific Payment
+```bash
+curl http://localhost:3000/api/payments/webhook/123 \
+  -H "codeskytz-api-key: your-api-key"
+```
+
+#### Manual Status Check
+```bash
+curl http://localhost:3000/api/payments/check-status/pay_abc123 \
+  -H "codeskytz-api-key: your-api-key"
+```
+
+### Webhook Security
+
+- ✅ **No authentication required** (Fastlipa handles security)
+- ✅ **Comprehensive logging** for audit trails
+- ✅ **Input validation** and sanitization
+- ✅ **Error handling** with proper HTTP status codes
+
+### Troubleshooting
+
+#### Common Issues
+
+1. **Webhook not received**
+   - Check Fastlipa dashboard webhook URL configuration
+   - Verify server is accessible from Fastlipa's IP ranges
+   - Check server logs for connection errors
+
+2. **Payment not found**
+   - Webhook received before payment record created
+   - Transaction ID mismatch
+   - Phone number format issues
+
+3. **Status not updating**
+   - Check webhook logs for errors
+   - Verify database connection
+   - Check payment record exists
+
+#### Debug Commands
+
+```bash
+# Check server logs for webhook activity
+tail -f server.log | grep -i webhook
+
+# Test webhook endpoint availability
+curl -I http://localhost:3000/api/payments/webhook
+
+# View recent webhook attempts
+curl "http://localhost:3000/api/payments/webhook-logs?limit=20" \
+  -H "codeskytz-api-key: your-api-key"
+```
+
+---
