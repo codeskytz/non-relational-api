@@ -3,7 +3,7 @@
 # CodeSkyTZ unrelational API
 
 
-A lightweight RESTful API providing AI-generated daily life quotes (powered by Gemini 2.0 Flash) and a simple Todo manager backed by PostgreSQL.
+A powerful RESTful API providing beautifully crafted, AI-generated motivational quotes about life, coding, and success (powered by Gemini 2.0 Flash), comprehensive todo management, and integrated payment processing with Fastlipa - all backed by PostgreSQL.
 
 ---
 [![Node.js](https://img.shields.io/badge/Node.js-v20-green?style=flat-square&logo=nodedotjs)](https://nodejs.org/)
@@ -37,7 +37,7 @@ codeskytz-api-key: your-api-key-here
 ## Endpoints
 
 ### 1. GET /life
-Retrieves an AI-generated motivational quote.
+Retrieves a beautifully crafted, AI-generated motivational quote about life, coding, and success.
 
 #### Request
 ```bash
@@ -50,7 +50,7 @@ curl -X GET https://api.codeskytz.site/life \
 {
   "quote": "Every sunrise resets your code—rewrite your destiny clean and fresh.",
   "mood": "inspirational",
-  "author": "Gemini Neural Forge"
+  "author": "CodeSkyTZ"
 }
 ```
 
@@ -205,7 +205,7 @@ Includes error handling middleware and console logging.
 
 ### Installation
 ```bash
-git clone https://github.com/codeskytz/life-api.git
+git clone https://github.com/codeskytz/non-relational-api.git
 cd life-api
 npm install
 ```
@@ -255,11 +255,18 @@ The migration creates a `todos` table with the following structure:
 ```bash
 node index.js  # Or npm start
 ```
-
 ### Testing
 ```bash
 curl http://localhost:3000/life \
   -H "codeskytz-api-key: your-api-key-here"
+
+# Example response:
+# {
+#   "quote": "Every sunrise resets your code—rewrite your destiny clean and fresh.",
+#   "mood": "inspirational",
+#   "author": "CodeSkyTZ"
+# }
+```
 
 curl http://localhost:3000/todos \
   -H "codeskytz-api-key: your-api-key-here"
