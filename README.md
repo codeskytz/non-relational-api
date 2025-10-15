@@ -20,6 +20,18 @@ A lightweight RESTful API providing AI-generated daily life quotes (powered by G
 
 All endpoints support CORS and return JSON responses. HTTP status codes indicate success or errors (e.g., 200 OK, 404 Not Found, 500 Internal Server Error).
 
+## Authentication
+
+All API endpoints require authentication using the `codeskytz-api-key` header. You must include this header in all requests:
+
+```
+codeskytz-api-key: your-api-key-here
+```
+
+### Authentication Errors
+- **401 Unauthorized**: Missing `codeskytz-api-key` header
+- **403 Forbidden**: Invalid API key provided
+
 ---
 
 ## Endpoints
@@ -29,7 +41,8 @@ Retrieves an AI-generated motivational quote.
 
 #### Request
 ```bash
-curl -X GET https://api.codeskytz.site/life
+curl -X GET https://api.codeskytz.site/life \
+  -H "codeskytz-api-key: your-api-key-here"
 ```
 
 #### Response (200 OK)
@@ -54,7 +67,8 @@ Retrieves all Todo items.
 
 #### Request
 ```bash
-curl -X GET https://api.codeskytz.site/todos
+curl -X GET https://api.codeskytz.site/todos \
+  -H "codeskytz-api-key: your-api-key-here"
 ```
 
 #### Response (200 OK)
@@ -90,6 +104,7 @@ Creates a new Todo item. Requires a `title` in the request body.
 ```bash
 curl -X POST https://api.codeskytz.site/todos \
   -H "Content-Type: application/json" \
+  -H "codeskytz-api-key: your-api-key-here" \
   -d '{"title": "Hack the planet"}'
 ```
 
@@ -118,6 +133,7 @@ Updates the status of a Todo item ("done" or "not yet").
 ```bash
 curl -X PATCH https://api.codeskytz.site/todos/3 \
   -H "Content-Type: application/json" \
+  -H "codeskytz-api-key: your-api-key-here" \
   -d '{"status": "done"}'
 ```
 
@@ -144,7 +160,8 @@ Deletes a Todo item by ID.
 
 #### Request
 ```bash
-curl -X DELETE https://api.codeskytz.site/todos/3
+curl -X DELETE https://api.codeskytz.site/todos/3 \
+  -H "codeskytz-api-key: your-api-key-here"
 ```
 
 #### Response (200 OK)
@@ -197,16 +214,42 @@ npm install
 Create a `.env` file:
 ```
 GEMINI_API_KEY=your_gemini_api_key
+CODESKYTZ_API_KEY=your_api_key_here
 PORT=3000
 DB_CONNECTION=postgresql://user:pass@localhost:5432/life_db
 ```
 
+**Required Environment Variables:**
+- `GEMINI_API_KEY`: Your Google Gemini AI API key for quote generation
+- `CODESKYTZ_API_KEY`: Your custom API key for authenticating requests
+- `PORT`: Port number for the server (default: 3000)
+- `DB_CONNECTION`: PostgreSQL connection string (for local development)
+
 ### Database Setup
-Initialize the database schema (run migrations if implemented) or seed demo data:
+This project uses database migrations for schema management. To set up the database:
+
+1. **Run migrations** to create the required tables:
 ```bash
-npm run migrate  # Optional: If migrations are added
-node seed.js     # Optional: For demo Todos
+npx db-migrate up
 ```
+
+2. **To rollback** (if needed):
+```bash
+npx db-migrate down
+```
+
+3. **Create new migrations**:
+```bash
+npx db-migrate create your-migration-name --sql-file
+```
+
+**Database Schema:**
+The migration creates a `todos` table with the following structure:
+- `id`: SERIAL PRIMARY KEY
+- `title`: VARCHAR(255) NOT NULL
+- `status`: VARCHAR(20) DEFAULT 'not yet' (CHECK constraint: 'done' or 'not yet')
+- `created_at`: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+- Indexes on `status` and `created_at` for better query performance
 
 ### Running the Server
 ```bash
@@ -215,8 +258,11 @@ node index.js  # Or npm start
 
 ### Testing
 ```bash
-curl http://localhost:3000/life
-curl http://localhost:3000/todos
+curl http://localhost:3000/life \
+  -H "codeskytz-api-key: your-api-key-here"
+
+curl http://localhost:3000/todos \
+  -H "codeskytz-api-key: your-api-key-here"
 ```
 
 ### Docker Deployment (Optional)
