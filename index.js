@@ -461,11 +461,11 @@ app.delete("/todos/:id", authenticateApiKey, async (req, res) => {
  *                 example: "Payment for services"
  *               customerName:
  *                 type: string
- *                 description: Customer name (optional)
+ *                 description: "Customer name (optional)"
  *                 example: "John Doe"
  *               customerEmail:
  *                 type: string
- *                 description: Customer email (optional)
+ *                 description: "Customer email (optional)"
  *                 example: "john@example.com"
  *     responses:
  *       201:
@@ -998,13 +998,13 @@ app.get("/api/payments/check-status/:transactionId", authenticateApiKey, async (
  *     parameters:
  *       - in: query
  *         name: limit
- *         description: Number of logs to retrieve (default: 50)
+ *         description: "Number of logs to retrieve (default: 50)"
  *         schema:
  *           type: integer
  *           default: 50
  *       - in: query
  *         name: status
- *         description: Filter by status (processed, error, no_matching_payment)
+ *         description: "Filter by status (processed, error, no_matching_payment)"
  *         schema:
  *           type: string
  *     responses:
@@ -1137,6 +1137,11 @@ app.get("/api/payments/webhook/:paymentId", authenticateApiKey, async (req, res)
       details: error.message
     });
   }
+});
+
+// 🏠 Serve Homepage
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // 🚀 Start Server
