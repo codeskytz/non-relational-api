@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSkyTZ Pay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #2E8BC0 0%, #1976D2 50%, #1565C0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(46, 139, 192, 0.2);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(46, 139, 192, 0.1);
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2E8BC0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            fill: #2E8BC0;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .amount-display {
+            background: linear-gradient(135deg, #2E8BC0, #1976D2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(46, 139, 192, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2E8BC0;
+            box-shadow: 0 0 0 3px rgba(46, 139, 192, 0.1);
+        }
+
+        .description {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .pay-button {
+            background: linear-gradient(135deg, #2E8BC0, #1976D2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(46, 139, 192, 0.3);
+        }
+
+        .pay-button:hover {
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(46, 139, 192, 0.4);
+        }
+
+        .pay-button:disabled {
+            background: #B0BEC5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 15px;
+            color: #2E8BC0;
+        }
+
+        .spinner {
+            border: 2px solid #E3F2FD;
+            border-top: 2px solid #2E8BC0;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="header">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                </svg>
+                CodeSkyTZ Pay
+            </div>
+            <div class="subtitle">Secure Payment Processing</div>
+        </div>
+
+        <div class="amount-display">
+            <div>Amount to Pay</div>
+            <div id="amount">TZS 0.00</div>
+        </div>
+
+        <div id="payment-form">
+            <div class="description" id="description">
+                Loading payment details...
+            </div>
+
+            <form id="paymentForm">
+                <div class="form-group">
+                    <label for="phoneNumber">
+                        <svg style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle; fill: #666;" viewBox="0 0 24 24">
+                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                        </svg>
+                        Phone Number
+                    </label>
+                    <input
+                        type="tel"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        placeholder="e.g., 0712345678"
+                        required
+                        pattern="0[0-9]{9}"
+                        maxlength="10"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="customerName">
+                        <svg style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle; fill: #666;" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        Full Name
+                    </label>
+                    <input
+                        type="text"
+                        id="customerName"
+                        name="customerName"
+                        placeholder="Enter your full name"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="pay-button" id="payButton">
+                    <svg style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle; fill: white;" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                    </svg>
+                    Pay Now
+                </button>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    Processing payment...
+                </div>
+            </form>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <a href="/" class="back-link">
+            <svg style="width: 16px; height: 16px; margin-right: 4px; vertical-align: middle; fill: #2E8BC0;" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Back to Home
+        </a>
+    </div>
+
+    <script>
+        // Get payment link ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentLinkId = window.location.pathname.split('/').pop();
+
+        let paymentData = null;
+
+        // Load payment details
+        async function loadPaymentDetails() {
+            try {
+                const response = await fetch(`/api/payments/link/${paymentLinkId}`, {
+                    headers: {
+                        'codeskytz-api-key': 'codeskytz-B7hbs5wsc09h' // Use your API key
+                    }
+                });
+                const result = await response.json();
+
+                if (result.success && result.payment) {
+                    paymentData = result.payment;
+                    document.getElementById('amount').textContent =
+                        `TZS ${parseFloat(paymentData.amount).toLocaleString()}`;
+                    document.getElementById('description').textContent =
+                        paymentData.description || 'Payment request';
+
+                    // Pre-fill form if phone number is available
+                    if (paymentData.phone_number) {
+                        document.getElementById('phoneNumber').value = paymentData.phone_number;
+                    }
+                    if (paymentData.customer_name) {
+                        document.getElementById('customerName').value = paymentData.customer_name;
+                    }
+                } else {
+                    showStatus('Payment link not found or expired', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading payment details:', error);
+                showStatus('Error loading payment details', 'error');
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const customerName = document.getElementById('customerName').value.trim();
+
+            if (!phoneNumber || !customerName) {
+                showStatus('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('payButton').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch('/api/payments/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        paymentLinkId,
+                        phoneNumber,
+                        customerName
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('Payment initiated successfully! Please check your phone.', 'success');
+
+                    // Update payment data with user input
+                    paymentData.phone_number = phoneNumber;
+                    paymentData.customer_name = customerName;
+
+                    // Hide form and show success
+                    document.getElementById('payment-form').style.display = 'none';
+                } else {
+                    showStatus(result.error || 'Payment initiation failed', 'error');
+                }
+            } catch (error) {
+                console.error('Error processing payment:', error);
+                showStatus('Error processing payment', 'error');
+            } finally {
+                // Hide loading state
+                document.getElementById('payButton').disabled = false;
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = `status-message ${type}`;
+            statusElement.style.display = 'block';
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
+        }
+
+        // Phone number formatting for Fastlipa API (local format)
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            // Remove any non-digits
+            let value = e.target.value.replace(/\D/g, '');
+
+            // Format for local Tanzanian number (0XXXXXXXXX)
+            if (value.length > 0) {
+                // Remove 255 country code if present
+                if (value.startsWith('255')) {
+                    value = value.substring(3);
+                }
+                // Ensure it starts with 0 for local format
+                if (value.length > 0 && !value.startsWith('0')) {
+                    value = '0' + value;
+                }
+                // Limit to 10 digits for local format
+                if (value.length > 10) {
+                    value = value.substring(0, 10);
+                }
+            }
+
+            e.target.value = value;
+        });
+
+        // Load payment details when page loads
+        document.addEventListener('DOMContentLoaded', loadPaymentDetails);
+    </script>
+</body>
+</html>
