@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>CodeSkyTZ Service API - AI-Powered Quotes & Payment Solutions</title>
+    <meta name="title" content="CodeSkyTZ Service API - AI-Powered Quotes & Payment Solutions">
+    <meta name="description" content="Powerful RESTful API providing AI-generated motivational quotes, todo management, and integrated payment processing with Fastlipa. Built with Node.js, Express, and PostgreSQL.">
+    <meta name="keywords" content="API, REST API, AI quotes, Gemini AI, payment processing, Fastlipa, Node.js, Express, PostgreSQL, todo management, motivational quotes, Tanzania, CodeSkyTZ">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="author" content="CodeSkyTZ">
+    <meta name="publisher" content="CodeSkyTZ">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://api.codeskytz.site/">
+    <meta property="og:title" content="CodeSkyTZ Service API - AI-Powered Quotes & Payment Solutions">
+    <meta property="og:description" content="Powerful RESTful API providing AI-generated motivational quotes, todo management, and integrated payment processing with Fastlipa. Built with Node.js, Express, and PostgreSQL.">
+    <meta property="og:image" content="https://i.ibb.co/XfTwmMHy/Black-White-Monogram-C-Logo-1.png">
+    <meta property="og:site_name" content="CodeSkyTZ Service API">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://api.codeskytz.site/">
+    <meta property="twitter:title" content="CodeSkyTZ Service API - AI-Powered Quotes & Payment Solutions">
+    <meta property="twitter:description" content="Powerful RESTful API providing AI-generated motivational quotes, todo management, and integrated payment processing with Fastlipa. Built with Node.js, Express, and PostgreSQL.">
+    <meta property="twitter:image" content="https://i.ibb.co/XfTwmMHy/Black-White-Monogram-C-Logo-1.png">
+
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://i.ibb.co/XfTwmMHy/Black-White-Monogram-C-Logo-1.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://i.ibb.co/XfTwmMHy/Black-White-Monogram-C-Logo-1.png">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/XfTwmMHy/Black-White-Monogram-C-Logo-1.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://api.codeskytz.site/">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="theme-color" content="#2E8BC0">
+    <meta name="msapplication-TileColor" content="#2E8BC0">
+    <meta name="application-name" content="CodeSkyTZ API">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebAPI",
+      "name": "CodeSkyTZ Service API",
+      "url": "https://api.codeskytz.site",
+      "description": "Powerful RESTful API providing AI-generated motivational quotes, todo management, and integrated payment processing with Fastlipa.",
+      "provider": {
+        "@type": "Organization",
+        "name": "CodeSkyTZ",
+        "url": "https://api.codeskytz.site",
+        "logo": "https://i.ibb.co/XfTwmMHy/Black-White-Monogram-C-Logo-1.png",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "shadows@codeskytz.site",
+          "contactType": "technical support"
+        }
+      },
+      "offers": {
+        "@type": "Offer",
+        "category": "Software as a Service",
+        "description": "RESTful API services including AI quotes, todo management, and payment processing"
+      },
+      "applicationCategory": "DeveloperTool",
+      "operatingSystem": "Cross-platform",
+      "softwareVersion": "1.0.0",
+      "fileSize": "Lightweight",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "ratingCount": "1"
+      },
+      "review": {
+        "@type": "Review",
+        "author": {
+          "@type": "Organization",
+          "name": "CodeSkyTZ"
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5"
+        },
+        "reviewBody": "Comprehensive API solution for AI-powered quotes, todo management, and payment processing"
+      }
+    }
+    </script>
+
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- DNS Prefetch for External Resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//i.ibb.co">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #2E8BC0 0%, #1976D2 50%, #1565C0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+
+        /* Glass morphism container */
+        .container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(46, 139, 192, 0.3);
+        }
+
+        /* Header section with logo */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .logo-img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        /* SEO and Accessibility Improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus styles for accessibility */
+        a:focus,
+        button:focus,
+        .feature-card:focus {
+            outline: 2px solid #2E8BC0;
+            outline-offset: 2px;
+        }
+
+        /* Skip link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #2E8BC0;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 1000;
+            border-radius: 4px;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 8px 32px rgba(46, 139, 192, 0.2); }
+            to { box-shadow: 0 8px 32px rgba(46, 139, 192, 0.4); }
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* Features grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #2E8BC0, #1976D2, #1565C0);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(46, 139, 192, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #2E8BC0, #1976D2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(46, 139, 192, 0.3);
+        }
+
+        .feature-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* API Endpoints section */
+        .endpoints {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 40px 0;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .endpoints-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .endpoint-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .endpoint-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .endpoint-method {
+            background: linear-gradient(135deg, #2E8BC0, #1976D2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .endpoint-path {
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .endpoint-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #2E8BC0, #1976D2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(46, 139, 192, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(46, 139, 192, 0.4);
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+        }
+
+        .cta-button svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+        }
+
+        /* Loading animation for API status */
+        .api-status {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-online {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .status-offline {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .status-pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Animated background particles -->
+    <div class="particles" aria-hidden="true">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 1.5s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 0.5s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 2.5s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 1.8s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 0.8s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 3s;"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header with logo -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="https://i.ibb.co/XfTwmMHy/Black-White-Monogram-C-Logo-1.png"
+                         alt="CodeSkyTZ Service API - AI-powered RESTful API for quotes, todos, and payments"
+                         class="logo-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display: none; font-size: 36px; font-weight: bold; color: #2E8BC0;">C</div>
+                </div>
+            </div>
+            <h1 class="title">CODESKYTZ</h1>
+            <p class="subtitle">Service API</p>
+            <div class="api-status status-online">
+                <div class="status-pulse"></div>
+                API Online
+            </div>
+        </header>
+
+        <!-- Features showcase -->
+        <main id="main-content" class="features">
+            <article class="feature-card">
+                <div class="feature-icon" aria-label="AI-powered quotes feature">
+                    <svg viewBox="0 0 24 24" role="img" aria-labelledby="ai-quotes-icon">
+                        <title id="ai-quotes-icon">Artificial Intelligence Quotes</title>
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <h2 class="feature-title">AI-Powered Quotes</h2>
+                <p class="feature-description">
+                    Generate inspirational life quotes using Google's Gemini AI.
+                    Perfect for daily motivation, content creation, and application integration.
+                    Leverage advanced natural language processing for unique, contextual quotes.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon" aria-label="todo management feature">
+                    <svg viewBox="0 0 24 24" role="img" aria-labelledby="todo-icon">
+                        <title id="todo-icon">Task Management System</title>
+                        <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zM4 3v2h16V3H4zm2 4v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6z"/>
+                    </svg>
+                </div>
+                <h2 class="feature-title">Todo Management</h2>
+                <p class="feature-description">
+                    Complete CRUD operations for task management with
+                    status tracking and PostgreSQL backend. Full-featured todo system
+                    with real-time updates and comprehensive data persistence.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon" aria-label="payment processing feature">
+                    <svg viewBox="0 0 24 24" role="img" aria-labelledby="payment-icon">
+                        <title id="payment-icon">Payment Gateway Integration</title>
+                        <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                    </svg>
+                </div>
+                <h2 class="feature-title">Payment Processing</h2>
+                <p class="feature-description">
+                    Integrated Fastlipa payment gateway with webhook support,
+                    secure transactions, and comprehensive logging. Seamless payment
+                    processing with real-time status updates and audit trails.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon" aria-label="api documentation feature">
+                    <svg viewBox="0 0 24 24" role="img" aria-labelledby="docs-icon">
+                        <title id="docs-icon">API Documentation</title>
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    </svg>
+                </div>
+                <h2 class="feature-title">API Documentation</h2>
+                <p class="feature-description">
+                    Comprehensive Swagger/OpenAPI documentation with examples,
+                    authentication guides, and interactive testing interface.
+                    Developer-friendly documentation for easy integration.
+                </p>
+            </article>
+        </main>
+
+        <!-- API Endpoints showcase -->
+        <section class="endpoints" aria-labelledby="endpoints-heading">
+            <h2 id="endpoints-heading" class="endpoints-title">Available API Endpoints</h2>
+            <div class="endpoints-list" role="list">
+                <div class="endpoint-item" role="listitem">
+                    <div class="endpoint-method" aria-label="HTTP GET method">GET</div>
+                    <div class="endpoint-path">/life</div>
+                    <div class="endpoint-description">AI-generated motivational quotes using Gemini AI</div>
+                </div>
+                <div class="endpoint-item" role="listitem">
+                    <div class="endpoint-method" aria-label="HTTP GET method">GET</div>
+                    <div class="endpoint-path">/todos</div>
+                    <div class="endpoint-description">Retrieve all todo items with PostgreSQL backend</div>
+                </div>
+                <div class="endpoint-item" role="listitem">
+                    <div class="endpoint-method" aria-label="HTTP POST method">POST</div>
+                    <div class="endpoint-path">/todos</div>
+                    <div class="endpoint-description">Create new todo item with validation</div>
+                </div>
+                <div class="endpoint-item" role="listitem">
+                    <div class="endpoint-method" aria-label="HTTP POST method">POST</div>
+                    <div class="endpoint-path">/api/payments/generate-link</div>
+                    <div class="endpoint-description">Generate secure payment links for Fastlipa integration</div>
+                </div>
+                <div class="endpoint-item" role="listitem">
+                    <div class="endpoint-method" aria-label="HTTP POST method">POST</div>
+                    <div class="endpoint-path">/api/payments/webhook</div>
+                    <div class="endpoint-description">Fastlipa payment webhook handler with comprehensive logging</div>
+                </div>
+                <div class="endpoint-item" role="listitem">
+                    <div class="endpoint-method" aria-label="HTTP GET method">GET</div>
+                    <div class="endpoint-path">/api-docs</div>
+                    <div class="endpoint-description">Interactive Swagger/OpenAPI documentation and testing interface</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to action buttons -->
+        <div class="cta-buttons">
+            <a href="/api-docs" class="cta-button">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                </svg>
+                View Documentation
+            </a>
+            <a href="https://github.com/codeskytz/life-api" class="cta-button">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"/>
+                </svg>
+                View Source
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer" role="contentinfo">
+            <p>&copy; 2025 CodeSkyTZ. Built with ❤️ using Node.js, Express, and PostgreSQL.</p>
+            <nav aria-label="Footer navigation">
+                <p>
+                    <a href="mailto:shadows@codeskytz.site" aria-label="Contact CodeSkyTZ technical support">Contact Support</a> |
+                    <a href="/api-docs" aria-label="View interactive API documentation">API Documentation</a> |
+                    <a href="https://github.com/codeskytz/life-api" aria-label="View source code on GitHub">GitHub Repository</a>
+                </p>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        // Add dynamic particle generation
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            const particleCount = 15;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+
+                // Random size
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // API status checker
+        async function checkApiStatus() {
+            try {
+                const response = await fetch('/life', {
+                    headers: {
+                        'codeskytz-api-key': 'codeskytz-B7hbs5wsc09h'
+                    }
+                });
+
+                const statusElement = document.querySelector('.api-status');
+                if (response.ok) {
+                    statusElement.className = 'api-status status-online';
+                    statusElement.innerHTML = `
+                        <div class="status-pulse"></div>
+                        API Online
+                    `;
+                } else {
+                    statusElement.className = 'api-status status-offline';
+                    statusElement.innerHTML = `
+                        <div class="status-pulse"></div>
+                        API Offline
+                    `;
+                }
+            } catch (error) {
+                const statusElement = document.querySelector('.api-status');
+                statusElement.className = 'api-status status-offline';
+                statusElement.innerHTML = `
+                    <div class="status-pulse"></div>
+                    API Offline
+                `;
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            checkApiStatus();
+
+            // Refresh API status every 30 seconds
+            setInterval(checkApiStatus, 30000);
+
+            // Performance optimization: Lazy load animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe feature cards for scroll animations
+            document.querySelectorAll('.feature-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        });
+
+        // Smooth scroll for anchor links with accessibility
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+
+                    // Update focus for screen readers
+                    target.setAttribute('tabindex', '-1');
+                    target.focus();
+                }
+            });
+        });
+
+        // Preload critical API resources
+        function preloadApiResources() {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = '/api-docs';
+            document.head.appendChild(link);
+        }
+
+        // Call preload function
+        preloadApiResources();
+
+        // Service Worker registration for better performance (if available)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Register service worker for caching static assets
+                // This would require a separate service worker file
+            });
+        }
+
+        // Track page performance for optimization
+        window.addEventListener('load', () => {
+            if ('performance' in window) {
+                const perfData = performance.getEntriesByType('navigation')[0];
+                console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+            }
+        });
+    </script>
+</body>
+</html>
