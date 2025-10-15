@@ -70,7 +70,7 @@ const swaggerOptions = {
           properties: {
             quote: {
               type: 'string',
-              description: 'The motivational quote text',
+              description: 'The beautifully crafted motivational quote text with vivid imagery',
               example: 'Every sunrise resets your code—rewrite your destiny clean and fresh.'
             },
             mood: {
@@ -81,7 +81,7 @@ const swaggerOptions = {
             author: {
               type: 'string',
               description: 'The author of the quote',
-              example: 'AI Mind'
+              example: 'CodeSkyTZ'
             }
           }
         },
@@ -170,7 +170,7 @@ const paymentService = new PaymentService(pool);
  * /life:
  *   get:
  *     summary: Get AI-generated motivational quote
- *     description: Retrieves a randomly generated motivational quote about life using Gemini AI
+ *     description: Retrieves a beautifully crafted, AI-generated motivational quote about life, coding, and success using Google's Gemini AI
  *     tags: [Quotes]
  *     responses:
  *       200:
@@ -189,12 +189,25 @@ const paymentService = new PaymentService(pool);
 app.get("/life", authenticateApiKey, async (req, res) => {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    const prompt = `Generate one short, powerful motivational quote about life.
+    const prompt = `Generate one short, powerful, and beautifully illustrated motivational quote about life, coding, success, or personal growth.
+
+    Guidelines for the quote:
+    - Make it poetic and memorable with vivid imagery
+    - Include metaphors, analogies, or coding references when appropriate
+    - Keep it concise but impactful (15-25 words)
+    - Make it universally relatable and inspiring
+    - Use creative language that paints a mental picture
+
+    Examples of good quotes:
+    - "Every sunrise resets your code—rewrite your destiny clean and fresh."
+    - "In the algorithm of life, persistence is the loop that never breaks."
+    - "Stack your dreams like functions; each layer builds toward something beautiful."
+
     Return ONLY valid JSON with no markdown formatting or code blocks:
     {
-      "quote": "...",
+      "quote": "your creative quote here",
       "mood": "uplifting/inspirational/calm",
-      "author": "AI Mind"
+      "author": "CodeSkyTZ"
     }`;
     
     const result = await model.generateContent(prompt);
