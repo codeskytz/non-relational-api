@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "driver": "pg",
+    "host": "europe-north1-001.proxy.kinsta.app",
+    "port": 30798,
+    "database": "christian-brown-magpie",
+    "user": "kibiki",
+    "password": "01319943591Bk",
+    "ssl": false
+  },
+  "production": {
+    "driver": "pg",
+    "host": "europe-north1-001.proxy.kinsta.app",
+    "port": 30798,
+    "database": "christian-brown-magpie",
+    "user": "kibiki",
+    "password": "01319943591Bk",
+    "ssl": false
+  }
+}
