@@ -29,6 +29,11 @@ export const validatePaymentLinkGeneration = (req, res, next) => {
       .messages({
         'string.email': 'Please provide a valid email address',
         'string.max': 'Email cannot exceed 255 characters'
+      }),
+    returnUrl: Joi.string().uri().max(500).optional()
+      .messages({
+        'string.uri': 'Return URL must be a valid URI',
+        'string.max': 'Return URL cannot exceed 500 characters'
       })
   });
 
