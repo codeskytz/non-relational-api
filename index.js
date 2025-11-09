@@ -474,12 +474,16 @@ app.delete("/todos/:id", authenticateApiKey, async (req, res) => {
  *                 example: "Payment for services"
  *               customerName:
  *                 type: string
- *                 description: "Customer name (optional)"
- *                 example: "John Doe"
- *               customerEmail:
- *                 type: string
- *                 description: "Customer email (optional)"
- *                 example: "john@example.com"
+ description: "Customer name (optional)"
+ example: "John Doe"
+customerEmail:
+  type: string
+  description: "Customer email (optional)"
+  example: "john@example.com"
+returnUrl:
+  type: string
+  description: "URL to return to after successful payment (optional)"
+  example: "https://example.com"
  *     responses:
  *       201:
  *         description: Payment link generated successfully
@@ -519,7 +523,7 @@ app.delete("/todos/:id", authenticateApiKey, async (req, res) => {
  */
 app.post("/api/payments/generate-link", authenticateApiKey, validatePaymentLinkGeneration, async (req, res) => {
   try {
-    const { amount, description, customerName, customerEmail } = req.body;
+    const { amount, description, customerName, customerEmail, returnUrl } = req.body;
 
     // Validation
     if (!amount || !description) {
@@ -540,7 +544,8 @@ app.post("/api/payments/generate-link", authenticateApiKey, validatePaymentLinkG
       amount,
       description,
       customerName,
-      customerEmail
+      customerEmail,
+      returnUrl
     });
 
     res.status(201).json(result);

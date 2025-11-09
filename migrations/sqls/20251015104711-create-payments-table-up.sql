@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS payments (
   customer_name VARCHAR(255),
   customer_email VARCHAR(255),
   description TEXT,
+  return_url VARCHAR(500),
   status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed', 'cancelled')),
   payment_reference VARCHAR(255),
   external_payment_id VARCHAR(255),

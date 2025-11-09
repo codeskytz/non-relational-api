@@ -16,7 +16,7 @@ export class PaymentService {
   /**
    * Generate a unique payment link
    */
-  async generatePaymentLink({ amount, description, customerName, customerEmail, phoneNumber }) {
+  async generatePaymentLink({ amount, description, customerName, customerEmail, phoneNumber, returnUrl }) {
     try {
       // Generate unique payment link ID
       const paymentLinkId = uuidv4();
@@ -26,8 +26,8 @@ export class PaymentService {
       const query = `
         INSERT INTO payments (
           payment_link_id, amount, currency, phone_number,
-          customer_name, customer_email, description, status
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+          customer_name, customer_email, description, return_url, status
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *
       `;
 
@@ -39,6 +39,7 @@ export class PaymentService {
         customerName,
         customerEmail,
         description,
+        returnUrl,
         'pending'
       ];
 

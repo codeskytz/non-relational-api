@@ -260,7 +260,7 @@
 
         <div id="statusMessage" class="status-message"></div>
 
-        <a href="/" class="back-link">
+        <a href="/" class="back-link" id="backLink">
             <svg style="width: 16px; height: 16px; margin-right: 4px; vertical-align: middle; fill: #2E8BC0;" viewBox="0 0 24 24">
                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
             </svg>
@@ -274,6 +274,7 @@
         const paymentLinkId = window.location.pathname.split('/').pop();
 
         let paymentData = null;
+        let returnUrl = null;
 
         // Load payment details
         async function loadPaymentDetails() {
@@ -287,10 +288,15 @@
 
                 if (result.success && result.payment) {
                     paymentData = result.payment;
+                    returnUrl = paymentData.return_url || '/';
+
                     document.getElementById('amount').textContent =
                         `TZS ${parseFloat(paymentData.amount).toLocaleString()}`;
                     document.getElementById('description').textContent =
                         paymentData.description || 'Payment request';
+
+                    // Update back button href with return URL
+                    document.getElementById('backLink').href = returnUrl;
 
                     // Pre-fill form if phone number is available
                     if (paymentData.phone_number) {
