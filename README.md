@@ -3,7 +3,7 @@
 # CodeSkyTZ unrelational API
 
 
-A powerful RESTful API providing beautifully crafted, AI-generated motivational quotes about life, coding, and success (powered by Gemini 2.0 Flash), comprehensive todo management, and integrated payment processing with Fastlipa - all backed by PostgreSQL.
+A powerful RESTful API providing beautifully crafted, AI-generated motivational quotes about life, coding, and success (powered by Gemini 2.0 Flash), comprehensive todo management, secure payment link generation with Fastlipa mobile money integration, and complete webhook handling - all backed by PostgreSQL with comprehensive documentation.
 
 ---
 [![Node.js](https://img.shields.io/badge/Node.js-v20-green?style=flat-square&logo=nodedotjs)](https://nodejs.org/)
@@ -36,7 +36,144 @@ codeskytz-api-key: your-api-key-here
 
 ## Endpoints
 
-### 1. GET /life
+### 1. POST /api/payments/generate-link
+Generates a unique payment link with Fastlipa integration. The generated link can be shared with customers for secure payment processing.
+
+#### Request
+```bash
+curl -X POST https://api.codeskytz.site/api/payments/generate-link \
+  -H "Content-Type: application/json" \
+  -H "codeskytz-api-key: your-api-key-here" \
+  -d '{
+    "amount": 1000,
+    "description": "Payment for services",
+    "customerName": "John Doe",
+    "customerEmail": "john@example.com",
+    "returnUrl": "https://example.com"
+  }'
+```
+
+#### Parameters
+- `amount` (required): Payment amount in TZS (minimum 0.01)
+- `description` (required): Payment description (3-255 characters)
+- `customerName` (optional): Customer's full name (2-255 characters)
+- `customerEmail` (optional): Customer's email address (valid email, max 255 characters)
+- `returnUrl` (optional): URL to redirect after successful payment (valid URI, max 500 characters)
+
+#### Response (201 Created)
+```json
+{
+  "success": true,
+  "paymentLink": "https://api.codeskytz.site/pay/abc-123-def-456",
+  "paymentLinkId": "abc-123-def-456",
+  "payment": {
+    "id": 123,
+    "payment_link_id": "abc-123-def-456",
+    "amount": 1000,
+    "currency": "TZS",
+    "description": "Payment for services",
+    "customer_name": "John Doe",
+    "customer_email": "john@example.com",
+    "return_url": "https://example.com",
+    "status": "pending",
+    "created_at": "2025-11-09T22:30:00.000Z"
+  }
+}
+```
+
+#### Error Examples
+```json
+// Validation Error (400 Bad Request)
+{
+  "error": "Validation failed",
+  "code": "VALIDATION_FAIL",
+  "details": [
+    {
+      "field": "amount",
+      "message": "Amount must be greater than 0"
+    }
+  ]
+}
+
+// Authentication Error (401 Unauthorized)
+{
+  "error": "API key required",
+  "code": "AUTH_REQUIRED"
+}
+```
+
+### 2. GET /api/payments/link/{paymentLinkId}
+Retrieves payment details for a specific payment link ID.
+
+#### Request
+```bash
+curl -X GET https://api.codeskytz.site/api/payments/link/abc-123-def-456 \
+  -H "codeskytz-api-key: your-api-key-here"
+```
+
+#### Response (200 OK)
+```json
+{
+  "success": true,
+  "payment": {
+    "id": 123,
+    "payment_link_id": "abc-123-def-456",
+    "amount": 1000,
+    "description": "Payment for services",
+    "customer_name": "John Doe",
+    "customer_email": "john@example.com",
+    "return_url": "https://example.com",
+    "status": "pending",
+    "created_at": "2025-11-09T22:30:00.000Z"
+  }
+}
+```
+
+### 3. POST /api/payments/process
+Processes a payment using Fastlipa gateway for a specific payment link.
+
+#### Request
+```bash
+curl -X POST https://api.codeskytz.site/api/payments/process \
+  -H "Content-Type: application/json" \
+  -d '{
+    "paymentLinkId": "abc-123-def-456",
+    "phoneNumber": "0712345678",
+    "customerName": "John Doe"
+  }'
+```
+
+#### Response (200 OK)
+```json
+{
+  "success": true,
+  "paymentId": "fastlipa_payment_123",
+  "status": "processing",
+  "instructions": "Payment initiated successfully. Please check your phone."
+}
+```
+
+### 4. GET /api/payments/stats
+Retrieves payment statistics and analytics.
+
+#### Request
+```bash
+curl -X GET https://api.codeskytz.site/api/payments/stats \
+  -H "codeskytz-api-key: your-api-key-here"
+```
+
+#### Response (200 OK)
+```json
+{
+  "total_payments": 150,
+  "total_amount": 250000.00,
+  "completed_payments": 140,
+  "pending_payments": 8,
+  "failed_payments": 2
+}
+```
+
+### 5. GET /life
 Retrieves a beautifully crafted, AI-generated motivational quote about life, coding, and success.
 
 #### Request
@@ -62,7 +199,7 @@ curl -X GET https://api.codeskytz.site/life \
 }
 ```
 
-### 2. GET /todos
+### 6. GET /todos
 Retrieves all Todo items.
 
 #### Request
@@ -97,7 +234,7 @@ curl -X GET https://api.codeskytz.site/todos \
 }
 ```
 
-### 3. POST /todos
+### 7. POST /todos
 Creates a new Todo item. Requires a `title` in the request body.
 
 #### Request
@@ -126,7 +263,7 @@ curl -X POST https://api.codeskytz.site/todos \
 }
 ```
 
-### 4. PATCH /todos/:id
+### 8. PATCH /todos/:id
 Updates the status of a Todo item ("done" or "not yet").
 
 #### Request
@@ -155,7 +292,7 @@ curl -X PATCH https://api.codeskytz.site/todos/3 \
 }
 ```
 
-### 5. DELETE /todos/:id
+### 9. DELETE /todos/:id
 Deletes a Todo item by ID.
 
 #### Request
@@ -186,13 +323,17 @@ No rate limits are currently enforced.
 
 ## Tech Stack
 
-- Node.js + Express.js: Backend framework
-- Gemini 2.0 Flash API: AI quote generation
-- PostgreSQL (Kinsta Cloud): Database
-- dotenv: Environment variable management
-- Joi: Request validation
+- **Node.js + Express.js**: Backend framework with RESTful API design
+- **Gemini 2.0 Flash API**: AI-powered motivational quote generation
+- **PostgreSQL (Kinsta Cloud)**: Robust database with migrations
+- **Fastlipa Payment Gateway**: Mobile money payment processing
+- **dotenv**: Environment variable management
+- **Joi**: Comprehensive request validation middleware
+- **Swagger/OpenAPI**: Interactive API documentation
+- **UUID**: Secure payment link generation
+- **Axios**: HTTP client for external API integrations
 
-Includes error handling middleware and console logging.
+Includes comprehensive error handling, authentication middleware, and detailed logging.
 
 ---
 
@@ -244,12 +385,41 @@ npx db-migrate create your-migration-name --sql-file
 ```
 
 **Database Schema:**
-The migration creates a `todos` table with the following structure:
+
+**Payments Table:**
+- `id`: SERIAL PRIMARY KEY
+- `payment_link_id`: VARCHAR(255) UNIQUE NOT NULL (UUID-based)
+- `amount`: DECIMAL(10,2) NOT NULL
+- `currency`: VARCHAR(3) DEFAULT 'TZS'
+- `phone_number`: VARCHAR(20)
+- `customer_name`: VARCHAR(255)
+- `customer_email`: VARCHAR(255)
+- `description`: TEXT
+- `return_url`: VARCHAR(500) (NEW: Custom return URL after payment)
+- `status`: VARCHAR(50) DEFAULT 'pending' (CHECK: pending/processing/completed/failed/cancelled)
+- `payment_reference`: VARCHAR(255)
+- `external_payment_id`: VARCHAR(255)
+- `payment_method`: VARCHAR(100)
+- `fastlipa_response`: JSONB
+- `created_at`: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+- `updated_at`: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+- `paid_at`: TIMESTAMP
+
+**Todos Table:**
 - `id`: SERIAL PRIMARY KEY
 - `title`: VARCHAR(255) NOT NULL
 - `status`: VARCHAR(20) DEFAULT 'not yet' (CHECK constraint: 'done' or 'not yet')
 - `created_at`: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-- Indexes on `status` and `created_at` for better query performance
+
+**Webhook Logs Table:**
+- `id`: SERIAL PRIMARY KEY
+- `payment_id`: INTEGER REFERENCES payments(id)
+- `webhook_data`: JSONB NOT NULL
+- `status`: VARCHAR(50) NOT NULL
+- `error_message`: TEXT
+- `created_at`: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+Indexes optimized for performance on frequently queried columns.
 
 ### Running the Server
 ```bash
@@ -257,19 +427,50 @@ node index.js  # Or npm start
 ```
 ### Testing
 ```bash
+# Test AI quote generation
 curl http://localhost:3000/life \
   -H "codeskytz-api-key: your-api-key-here"
 
-# Example response:
-# {
-#   "quote": "Every sunrise resets your code—rewrite your destiny clean and fresh.",
-#   "mood": "inspirational",
-#   "author": "CodeSkyTZ"
-# }
-```
+# Test payment link generation with return URL
+curl -X POST http://localhost:3000/api/payments/generate-link \
+  -H "Content-Type: application/json" \
+  -H "codeskytz-api-key: your-api-key-here" \
+  -d '{
+    "amount": 1000,
+    "description": "Test payment",
+    "returnUrl": "https://example.com/success"
+  }'
 
+# Test todo management
 curl http://localhost:3000/todos \
   -H "codeskytz-api-key: your-api-key-here"
+```
+
+#### Example Responses
+
+**Quote Generation:**
+```json
+{
+  "quote": "Every sunrise resets your code—rewrite your destiny clean and fresh.",
+  "mood": "inspirational",
+  "author": "CodeSkyTZ"
+}
+```
+
+**Payment Link Generation:**
+```json
+{
+  "success": true,
+  "paymentLink": "http://localhost:3000/pay/abc-123-def-456",
+  "paymentLinkId": "abc-123-def-456",
+  "payment": {
+    "id": 123,
+    "amount": 1000,
+    "description": "Test payment",
+    "return_url": "https://example.com/success",
+    "status": "pending"
+  }
+}
 ```
 
 ### Docker Deployment (Optional)
@@ -293,6 +494,45 @@ MIT License. Copyright © 2025 CodeSkyTZ. All rights reserved.
 For questions, contact: shadows@codeskytz.site
 
 ---
+
+## 💳 Payment Integration Features
+
+### ✨ New: Custom Return URLs
+The payment link generation now supports an optional `returnUrl` parameter that allows you to specify where users should be redirected after successful payment completion. This enables seamless integration with external applications and custom success pages.
+
+**Example:**
+```bash
+curl -X POST https://api.codeskytz.site/api/payments/generate-link \
+  -H "Content-Type: application/json" \
+  -H "codeskytz-api-key: your-api-key-here" \
+  -d '{
+    "amount": 1000,
+    "description": "Premium service subscription",
+    "returnUrl": "https://myapp.com/payment/success"
+  }'
+```
+
+The generated payment form will display a "Back to Home" button that uses your custom URL instead of defaulting to the API homepage.
+
+### 🔗 Payment Link Generation
+- ✅ **Secure UUID-based links** with expiration handling
+- ✅ **Custom return URLs** for seamless user experience
+- ✅ **Comprehensive validation** for all input parameters
+- ✅ **Database persistence** with full audit trail
+- ✅ **Real-time status tracking** and updates
+
+### 📱 Payment Processing
+- ✅ **Fastlipa integration** for mobile money payments
+- ✅ **Multi-currency support** (TZS default)
+- ✅ **Phone number validation** and formatting
+- ✅ **Real-time payment status** updates
+- ✅ **Webhook handling** with comprehensive logging
+
+### 📊 Analytics & Monitoring
+- ✅ **Payment statistics** dashboard
+- ✅ **Webhook logs** for debugging and audit
+- ✅ **Status tracking** across all payment states
+- ✅ **Performance metrics** and analytics
 
 ## 🪝 Fastlipa Webhook Integration
 
