@@ -1,9 +1,12 @@
 {
   "name": "codeskytz-life-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "A powerful RESTful API providing AI-generated motivational quotes, todo management, and Fastlipa payment processing",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
